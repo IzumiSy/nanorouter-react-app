@@ -1,19 +1,25 @@
 import React from 'react';
 import nanorouter  from "nanorouter"
+import { createBrowserHistory } from 'history'
 
 export const useRouter = (routes) => {
-  const _router = (routes, initialPath) => React.useMemo(() => {
-    const router = nanorouter({ default: '/' })
-    let nextComponent = null
+  const history = React.useRef(createBrowserHistory())
+  const [currentPath, setCurrentPath] = React.useState(history.current.location.pathname)
 
-    Object.keys(routes).forEach(path => {
-      router.on(path, param => { nextComponent = routes[path] })
+  React.useEffect(() => {
+    history.current.listen((location, action) => {
+      setCurrentPath(location.pathname)
     })
+  }, [])
 
-    router.emit(initialPath)
+  const nextComponent = React.useRef(null)
+  const router = nanorouter({ default: "/" })
 
-    return nextComponent
-  }, [routes, initialPath])
+  Object.keys(routes).forEach(path => {
+    router.on(path, param => { nextComponent.current = routes[path] })
+  })
 
-  return initialPath => _router(routes, initialPath)
+  router.emit(currentPath)
+
+  return [history.current, nextComponent.current]
 }
