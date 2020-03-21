@@ -1,13 +1,19 @@
 import React from 'react'
-import { Route } from './Route'
+import { useRouter } from './Route'
 import { PageA } from './PageA'
 import { PageB } from './PageB'
 
 function App() {
-  return Route({
+  const router = useRouter({
     '/hello': <PageA />,
     '/world': <PageB />,
   })
+
+  return (
+    <div className="container">
+      {router(window.location.pathname)}
+    </div>
+  )
 }
 
 export default App;

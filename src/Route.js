@@ -1,7 +1,7 @@
 import React from 'react';
 import nanorouter  from "nanorouter"
 
-const useRouter = (routes) => {
+export const useRouter = (routes) => {
   const _router = (routes, initialPath) => React.useMemo(() => {
     const router = nanorouter({ default: '/' })
     let nextComponent = null
@@ -16,15 +16,4 @@ const useRouter = (routes) => {
   }, [routes, initialPath])
 
   return initialPath => _router(routes, initialPath)
-}
-
-export const Route = routes => {
-  const router = useRouter(routes)
-  const nextComponent = router(window.location.pathname)
-
-  return (
-    <div className="container">
-      {nextComponent}
-    </div>
-  )
 }
